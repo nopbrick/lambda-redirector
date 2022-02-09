@@ -5,7 +5,7 @@ service: lambdanet
 #org: your-org-name
 plugins:
   - serverless-dotnet
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -13,12 +13,12 @@ provider:
   lambdaHashingVersion: 20201221
 
 # you can overwrite defaults here
-  stage: test #this is the mandatory URI part, request looks like this /stage/eventpath. Default stage is "api"
+  stage: api #this is the mandatory URI part, request looks like this /stage/eventpath. Default stage is "api"
   region: eu-central-1 #default: Europe-Frankfurt
 
 # you can define service wide environment variables here
-  environment:
-    TEAMSERVER: ${opt:teamserver}  #mandatory
+  #environment:
+  #  TEAMSERVER: ${opt:teamserver}  #mandatory
 
 custom:
   variables:
@@ -33,7 +33,7 @@ functions:
   redirector:
     handler: CsharpHandlers::Redirector.Function::FunctionHandler
     package:
-      artifact: .serverless/lambdanet.zip
+      artifact: bin/Release/netcoreapp3.1/redirector.zip
     events:
       - http:
           path: /{all+}
