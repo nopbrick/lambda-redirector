@@ -51,7 +51,7 @@ functions:
   redirector:
     handler: CsharpHandlers::Redirector.Function::FunctionHandler
     package:
-      artifact: .serverless/lambdanet.zip
+      artifact: bin/Release/netcoreapp3.1/redirector.zip
     events:
       - http:
           path: /{all+}
