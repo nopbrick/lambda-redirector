@@ -5,7 +5,7 @@ service: lambdanet
 #org: your-org-name
 plugins:
   - serverless-dotnet
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -13,12 +13,30 @@ provider:
   lambdaHashingVersion: 20201221
 
 # you can overwrite defaults here
-  stage: test #this is the mandatory URI part, request looks like this /stage/eventpath. Default stage is "api"
+  stage: api #this is the mandatory URI part, request looks like this /stage/eventpath. Default stage is "api"
   region: eu-central-1 #default: Europe-Frankfurt
 
 # you can define service wide environment variables here
-  environment:
-    TEAMSERVER: ${opt:teamserver}  #mandatory
+  #environment:
+  #  TEAMSERVER: ${opt:teamserver}  #mandatory
+
+service: lambdanet
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+plugins:
+  - serverless-dotnet
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: dotnetcore3.1
+  lambdaHashingVersion: 20201221
+
+# you can overwrite defaults here
+  stage: api #this is the mandatory URI part, request looks like this /stage/eventpath. Default stage is "api"
+  region: eu-central-1 #default: Europe-Frankfurt
+
 
 custom:
   variables:
@@ -34,6 +52,25 @@ functions:
     handler: CsharpHandlers::Redirector.Function::FunctionHandler
     package:
       artifact: .serverless/lambdanet.zip
+    events:
+      - http:
+          path: /{all+}
+          method: any
+
+custom:
+  variables:
+    myRegion: ${opt:region, self:provider.region}
+    myStage: ${opt:stage, self:provider.stage}
+    myServiceName: ${opt:servicename, self:service}
+
+package:
+  individually: true
+
+functions:
+  redirector:
+    handler: CsharpHandlers::Redirector.Function::FunctionHandler
+    package:
+      artifact: bin/Release/netcoreapp3.1/redirector.zip
     events:
       - http:
           path: /{all+}
